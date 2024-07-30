@@ -4,25 +4,66 @@
     <head>
         <title>Muffin Clicker</title>
         <link rel="stylesheet" href="styles.css">
+        <script src="main.java"></script>
     </head>
     <body>
         <div class="headingClass">
+            <!--Headings-->
             <h1>Muffin Clicker</h1>
             <h2 id="muffinCounter">Muffins: </h2>
         </div>
+
+        <div class="unselectableImage">
+            <!--The Great Blueberry Muffin and the initialization for mapping-->
+            <img src="assets\the_great_blueberry_muffin.png" alt="The Great Blueberry Muffin is missing..." usemap="#muffin-map" draggable="false">
+            <map name="muffin-map" id="muffinMap" class="clickable"></map>
+        </div>
+
         <div>
-            <button onclick="handleMuffinClick()">
-                <img src="assets\the_great_blueberry_muffin.png" alt="The Great Blueberry Muffin is missing...">
+            <!--Flat +1 mpc (muffin per click) upgrade-->
+            <button type="button" id="upgradeOneButton" onclick="handleBoughtUpgrade('upgrade1')">
+                Upgrade 1
             </button>
         </div>
+
         <script>
+            // Import libraries
+
+            // Initialize variables
             let muffinCount = 0;
+            let mpcUpgrade = 0;
+            let upgradeOneCount = 0;
+            const initialUpgradeOneCost = 100;
+            let upgradeOneCost = initialUpgradeOneCost;
             document.getElementById('muffinCounter').innerText = (`Muffins: ${muffinCount}`);
+            document.getElementById('upgradeOneButton').innerText = (`Upgrade 1: ${upgradeOneCost} Muffins`)
+
+            function handleBoughtUpgrade(type) {
+                if (type === 'upgrade1') {
+                    if (muffinCount >= upgradeOneCost) {
+                        muffinCount -= upgradeOneCost;
+                        upgradeOneCount += 1;
+                        console.log(Math.pow(1.5, upgradeOneCount))
+                        upgradeOneCost = Math.round(initialUpgradeOneCost * Math.pow(1.5, upgradeOneCount))
+                        mpcUpgrade += 1;
+                        document.getElementById('muffinCounter').innerText = (`Muffins: ${muffinCount}`);
+                        document.getElementById('upgradeOneButton').innerText = (`Upgrade 1: ${upgradeOneCost} Muffins`)
+                    }
+                }
+            }
+
             function handleMuffinClick() {
                 console.log('Who dares click The Mighty Blueberry Muffin?');
-                muffinCount = muffinCount + 1;
+                muffinCount += 1 + mpcUpgrade;
                 document.getElementById('muffinCounter').innerText = (`Muffins: ${muffinCount}`);
             }
+            
+            // Create area element to map a polygon onto The Muffin image
+            const muffinAreaElement = document.createElement('area');
+            muffinAreaElement.shape = 'poly';
+            muffinAreaElement.coords = muffinPolygonCoords;
+            muffinAreaElement.onclick = handleMuffinClick;
+            document.getElementById('muffinMap').appendChild(muffinAreaElement);
         </script>
     </body>
 </html>

@@ -1,3 +1,16 @@
 .headingClass {
-    color: rgb(71, 5, 175)
+    color: rgb(71, 5, 175);
+}
+
+.unselectableImage {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.clickable {
+    cursor: pointer;
 }
