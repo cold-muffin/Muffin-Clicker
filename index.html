@@ -20,9 +20,15 @@
         </div>
 
         <div>
+            <br>
             <!--Flat +1 mpc (muffin per click) upgrade-->
-            <button type="button" id="upgradeOneButton" onclick="handleBoughtUpgrade('upgrade1')">
+            <button type="button" id="upgradeOneButton" onclick="handleBoughtUpgrade('upgrade1')" class="upgradeButtons">
                 Upgrade 1
+            </button>
+            <br>
+            <!--Flat +1 mps (muffin per second) upgrade-->
+            <button type="button" id="upgradeTwoButton" onclick="handleBoughtUpgrade('upgrade2')" class="upgradeButtons">
+                Upgrade 2
             </button>
         </div>
 
@@ -32,37 +38,63 @@
             // Initialize variables
             let muffinCount = 0;
             let mpcUpgrade = 0;
+            let mpsUpgrade = 0;
             let upgradeOneCount = 0;
+            let upgradeTwoCount = 0;
             const initialUpgradeOneCost = 100;
+            const initialUpgradeTwoCost = 200;
             let upgradeOneCost = initialUpgradeOneCost;
+            let upgradeTwoCost = initialUpgradeTwoCost;
             document.getElementById('muffinCounter').innerText = (`Muffins: ${muffinCount}`);
             document.getElementById('upgradeOneButton').innerText = (`Upgrade 1: ${upgradeOneCost} Muffins`)
+            document.getElementById('upgradeTwoButton').innerText = (`Upgrade 2: ${upgradeTwoCost} Muffins`)
 
             function handleBoughtUpgrade(type) {
                 if (type === 'upgrade1') {
                     if (muffinCount >= upgradeOneCost) {
                         muffinCount -= upgradeOneCost;
                         upgradeOneCount += 1;
-                        console.log(Math.pow(1.5, upgradeOneCount))
-                        upgradeOneCost = Math.round(initialUpgradeOneCost * Math.pow(1.5, upgradeOneCount))
+                        upgradeOneCost = Math.round(initialUpgradeOneCost * Math.pow(1.5, upgradeOneCount));
                         mpcUpgrade += 1;
                         document.getElementById('muffinCounter').innerText = (`Muffins: ${muffinCount}`);
-                        document.getElementById('upgradeOneButton').innerText = (`Upgrade 1: ${upgradeOneCost} Muffins`)
+                        document.getElementById('upgradeOneButton').innerText = (`Upgrade 1: ${upgradeOneCost} Muffins`);
+                    } else {
+                        logger.log('NOT ENOUGH MUFFINS')
+                    }
+                } else if (type === 'upgrade2') {
+                    if (muffinCount >= upgradeTwoCost) {
+                        muffinCount -= upgradeTwoCost;
+                        upgradeTwoCount += 1;
+                        upgradeTwoCost = Math.round(initialUpgradeTwoCost * Math.pow(1.5, upgradeTwoCount));
+                        mpsUpgrade += 1;
+                        document.getElementById('muffinCounter').innerText = (`Muffins: ${muffinCount}`);
+                        document.getElementById('upgradeTwoButton').innerText = (`Upgrade 2: ${upgradeTwoCost} Muffins`);
                     }
                 }
             }
 
-            function handleMuffinClick() {
+            function handleMuffinClick(mpcUpgrade) {
                 console.log('Who dares click The Mighty Blueberry Muffin?');
                 muffinCount += 1 + mpcUpgrade;
                 document.getElementById('muffinCounter').innerText = (`Muffins: ${muffinCount}`);
             }
+
+            function handleMuffinsPerSecond(mpsUpgrade) {
+                muffinCount += mpsUpgrade;
+                document.getElementById('muffinCounter').innerText = (`Muffins: ${muffinCount}`);
+            }
+
+            const setMuffinsPerSecondInterval = setInterval(function() {
+                handleMuffinsPerSecond(mpsUpgrade)
+            }, 1000) // Give mpsUpgrade muffins per second
             
             // Create area element to map a polygon onto The Muffin image
             const muffinAreaElement = document.createElement('area');
             muffinAreaElement.shape = 'poly';
             muffinAreaElement.coords = muffinPolygonCoords;
-            muffinAreaElement.onclick = handleMuffinClick;
+            muffinAreaElement.onclick = function() {
+                handleMuffinClick(mpcUpgrade);
+            }
             document.getElementById('muffinMap').appendChild(muffinAreaElement);
         </script>
     </body>
