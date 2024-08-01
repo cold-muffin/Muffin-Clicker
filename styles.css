@@ -16,14 +16,35 @@
 }
 
 .upgradeButtons {
-    background-color: #04AA6D;
-    border: none;
-    color: white;
+    background-color: #0778c4;
+    border: solid;
+    border-width: 2px 2px 2px 2px;
+    border-color: #2250b1;
+    color: rgb(232, 239, 255);
     padding: 15px 32px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 16px;
+    font-weight: 600;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.disabledUpgradeButtons {
+    background-color: #646464;
+    border: solid;
+    border-width: 2px 2px 2px 2px;
+    border-color: #555555;
+    color: rgb(173, 173, 173);
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
     margin: 4px 2px;
     cursor: pointer;
 }
