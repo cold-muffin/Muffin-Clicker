@@ -4,7 +4,6 @@
     <head>
         <title>Muffin Clicker</title>
         <link rel="stylesheet" href="styles.css">
-        <script src="main.java"></script>
     </head>
     <body>
         <div class="headingClass">
@@ -25,12 +24,12 @@
         <div id="upgradeButtons">
             <br>
             <!--Flat +1 mpc (muffin per click) upgrade-->
-            <button type="button" id="upgradeOneButton" onclick="handleBoughtUpgrade('upgrade1')" class="upgradeButtons">
+            <button type="button" id="upgradeOneButton" onclick="handleUpgradeButtonClick(0, 1.5)" class="upgradeButtons">
                 Upgrade Click Power
             </button>
             <br>
             <!--Flat +1 mps (muffin per second) upgrade-->
-            <button type="button" id="upgradeTwoButton" onclick="handleBoughtUpgrade('upgrade2')" class="upgradeButtons">
+            <button type="button" id="upgradeTwoButton" onclick="handleUpgradeButtonClick(1, 1.5)" class="upgradeButtons">
                 Upgrade Idle Bakery
             </button>
         </div>
@@ -46,140 +45,6 @@
             <button type="submit">Submit</button>
         </form>
 
-        <script>
-            // Import libraries
-
-            // Initialize variables
-            let lastcps = 0
-            let cps = 0
-            let consistentcpsInterval = 0
-            let muffinCount = 250;
-            let sugarRushBool = false;
-            let sugarRushTime = 0;
-            let mpcUpgrade = 0;
-            let mpsUpgrade = 0;
-            let upgradeOneCount = 0;
-            let upgradeTwoCount = 0;
-            const initialUpgradeOneCost = 100;
-            const initialUpgradeTwoCost = 200;
-            let upgradeOneCost = initialUpgradeOneCost;
-            let upgradeTwoCost = initialUpgradeTwoCost;
-            document.getElementById('muffinCounter').innerText = (`Muffins: ${muffinCount}`);
-            document.getElementById('upgradeOneButton').innerText = (`Upgrade Click Power: ${upgradeOneCost} Muffins`)
-            document.getElementById('upgradeTwoButton').innerText = (`Upgrade Idle Bakery: ${upgradeTwoCost} Muffins`)
-
-            function handleBoughtUpgrade(type) {
-                if (type === 'upgrade1') {
-                    if (muffinCount >= upgradeOneCost) {
-                        muffinCount -= upgradeOneCost;
-                        upgradeOneCount += 1;
-                        upgradeOneCost = Math.round(initialUpgradeOneCost * Math.pow(1.5, upgradeOneCount));
-                        mpcUpgrade += 1;
-                        document.getElementById('muffinCounter').innerText = (`Muffins: ${muffinCount}`);
-                        document.getElementById('upgradeOneButton').innerText = (`Upgrade Click Power: ${upgradeOneCost} Muffins`);
-                    } else {
-                        console.log('NOT ENOUGH MUFFINS');
-                    };
-                } else if (type === 'upgrade2') {
-                    if (muffinCount >= upgradeTwoCost) {
-                        muffinCount -= upgradeTwoCost;
-                        upgradeTwoCount += 1;
-                        upgradeTwoCost = Math.round(initialUpgradeTwoCost * Math.pow(1.5, upgradeTwoCount));
-                        mpsUpgrade += 1;
-                        document.getElementById('muffinCounter').innerText = (`Muffins: ${muffinCount}`);
-                        document.getElementById('upgradeTwoButton').innerText = (`Upgrade Idle Bakery: ${upgradeTwoCost} Muffins`);
-                    };
-                };
-            };
-
-            function handleMuffinClick(mpcUpgrade) {
-                //console.log('Who dares click The Mighty Blueberry Muffin?');
-                cps += 1
-                muffinCount += 1 + mpcUpgrade;
-                document.getElementById('muffinCounter').innerText = (`Muffins: ${muffinCount}`);
-            };
-
-            function handleMuffinsPerSecond(mpsUpgrade) {
-                muffinCount += mpsUpgrade;
-                document.getElementById('muffinCounter').innerText = (`Muffins: ${muffinCount}`);
-            };
-
-            function handleBlueberryClick(mpsUpgrade, mpcUpgrade) {
-                min = 1;
-                max = 3;
-                let randomNumber = Math.floor(Math.random() * (max - min) + min);
-                if (randomNumber === 1) {
-                    muffinCount += (mpsUpgrade * 600)
-                    document.getElementById('muffinCounter').innerText = (`Muffins: ${muffinCount}`);
-                };
-                if (randomNumber === 2) {
-                    sugarRushBool = true;
-                    sugarRushTime = 5;
-                    console.log('SUGAR RUSH')
-                }
-            };
-
-            function disableAllInDivision(division) {
-                const buttonDivision = document.getElementById(`${division}`);
-                const upgradeButtons = buttonDivision.querySelectorAll('button')
-                upgradeButtons.forEach(button => button.disabled = true)
-                upgradeButtons.forEach(button => button.classList.add('disabledUpgradeButtons'))
-            };
-
-            const setMuffinsPerSecondInterval = setInterval(function() {
-                //console.log(cps, lastcps, consistentcpsInterval)
-                if (cps >= 30) { // Immediatly flag 30 cps and above
-                    console.log('FAST AUTOCLICKER DETECTED');
-                    disableAllInDivision('upgradeButtons');
-
-                } else if (cps > 8 && (cps >= lastcps - 1 || cps <= lastcps + 1)) { // If the cps is greater than 8 and stays consistent (less than or greater than 1 of last cps)
-                    consistentcpsInterval += 1;
-
-                    if (consistentcpsInterval >= 10) {
-                        console.log('AUTOCLICKER DETECTED');
-                        disableAllInDivision('upgradeButtons');
-                    };
-
-                } else {
-                    consistentcpsInterval = 0;
-                };
-
-                if ((sugarRushTime + 1) > 1) {
-                    sugarRushTime -= 1;
-                    if (sugarRushTime === 1) {
-                        sugarRushTime = 0;
-                        mpcUpgrade = upgradeOneCount; // Set mpc to amount of upgrade one bought (initial) (CHANGE THIS WHEN MORE UPDATES TO MPC ARE ADDED)
-                    };
-                };
-
-                if (sugarRushBool === true) {
-                    mpcUpgrade = (mpcUpgrade + 1) * 10 - 1 // Doesn't work properly when an upgrade is bought in the middle of a sugar rush
-                    sugarRushBool = false;
-                };
-
-                console.log(sugarRushTime, sugarRushBool);
-
-                lastcps = cps
-                cps = 0;
-                handleMuffinsPerSecond(mpsUpgrade);
-            }, 1000); // Give mpsUpgrade muffins per 1000 ticks (1 second)
-
-            // Create area element to map a polygon onto The Muffin image
-            const muffinAreaElement = document.createElement('area');
-            muffinAreaElement.shape = 'poly';
-            muffinAreaElement.coords = muffinPolygonCoords;
-            muffinAreaElement.onclick = function() {
-                handleMuffinClick(mpcUpgrade);
-            };
-            document.getElementById('muffinMap').appendChild(muffinAreaElement);
-
-            const blueberryAreaElement = document.createElement('area');
-            blueberryAreaElement.shape = 'poly';
-            blueberryAreaElement.coords = blueberryPolygonCoords;
-            blueberryAreaElement.onclick = function() {
-                handleBlueberryClick(mpsUpgrade, mpcUpgrade);
-            };
-            document.getElementById('blueberryMap').appendChild(blueberryAreaElement);
-        </script>
+        <script src="main.js"></script>
     </body>
 </html>
